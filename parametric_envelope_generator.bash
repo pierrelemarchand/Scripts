@@ -11,7 +11,7 @@
 ##############################
 
 # Materials parameters
-lights_radiance=1
+lights_radiance=$1
 wall_color=.9
 # (http://www.jaloxa.eu/resources/radiance/colour_picker/index.shtml can be helpful)
 # Geometry parameters
