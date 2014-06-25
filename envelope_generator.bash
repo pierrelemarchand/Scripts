@@ -53,9 +53,9 @@ oconv ./$envelope_name/envelope.rad > $envelope_name/envelope.oct
 
 echo "  Calculating illuminance..."
 
-./illuminance_point_calculator.bash $envelope_name
+#./illuminance_point_calculator.bash $envelope_name
 
-#./illuminance_grid_calculator.bash $envelope_name $box_side $work_plane_height $grid_resolution
+./illuminance_grid_calculator.bash $envelope_name $box_side $work_plane_height $grid_resolution
 
 echo "  Done."
 echo ""

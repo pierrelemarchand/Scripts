@@ -10,6 +10,8 @@
 # Its side is given by input 2 and its height by input 3.
 # Its resolution is given by input 4.
 
+# Warning : this script needs gnuplot, for the plotting part.
+
 # Input 1 : envelope name
 # Input 2 : side of the grid surface
 # Input 3 : height of the grid surface
@@ -32,7 +34,7 @@ vwrays -x $4 -y $4 -vf $1/down_l.vf \
 	| rcalc -e '\$1=\$1;\$2=\$2;\$3=$3;\$4=\$4;\$5=\$5;\$6=1' \
 	| rtrace -I -ab $ambient_bounces -h -oov $1/envelope.oct \
 	| rcalc -e '\$1=\$1;\$2=\$2;\$3=179*(.265*\$4+.670*\$5+.065*\$6)' \
-	> $1/ab"$ambient_bounces"_grid"$4"illuminance.pts
+	> $1/ab"$ambient_bounces"_grid"$4"_illuminance.pts
 " \
 	> $1/temp_script.bash
 chmod u+x $1/temp_script.bash
@@ -43,7 +45,7 @@ awk '{ if ((NR % '$4') == 1 && NR != 1) printf("\n"); print; }' $1/"ab"$ambient_
 
 #with
 echo "set terminal pngcairo enhanced font \"arial,10\" fontscale 1.0 size 550, 450 
-set output 'illuminance_map.png'
+set output 'ab"$ambient_bounces"_grid"$4"_illuminance_map.png'
 unset key
 set view map
 set xtics border in scale 0,0 mirror norotate  offset character 0, 0, 0 autojustify
@@ -60,4 +62,4 @@ plot \"$1/temp_coefficients.pts\" using 2:1:3 with image" > $1/temp_plotcommands
 
 gnuplot $1/temp_plotcommands.gp
 
-mv illuminance_map.png $1
+mv "ab"$ambient_bounces"_grid"$4"_illuminance_map.png" $1
