@@ -1,1 +1,0 @@
-Most scripts are tools to be called by another script.
