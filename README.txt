@@ -18,3 +18,5 @@ Tools :
 		Calculates the horizontal illuminance at a precise point
 	illuminance_grid_calculator.bash
 		Calculates the horizontal illuminance for all points of a grid, and generates a false color plot
+	daylight_autonomy.bash
+		Calculates the daylight autonomy for all points of a grid, and generates a false color plot
