@@ -10,7 +10,7 @@
 # Its side is given by input 2 and its height by input 3.
 # Its resolution is given by input 4.
 
-# Warning : this script needs gnuplot, for the plotting part.
+# Warning : this script needs gnuplot installed on the computer.
 
 # Input 1 : envelope name
 # Input 2 : side of the grid surface
