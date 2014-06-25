@@ -19,9 +19,10 @@ box_side=300
 work_plane_height=100
 OFcospread=15 # Array of OFcospread * OFcospread
 OFradius=5 # In %. The Optical Fibers must not overlap!
-grid_resolution=10
+grid_resolution=3
 # Name of the file
 envelope_name="first_envelope"
+ambient_bounces=0
 
 ##############################
 #           Script           #
@@ -55,7 +56,11 @@ echo "  Calculating illuminance..."
 
 #./illuminance_point_calculator.bash $envelope_name
 
-./illuminance_grid_calculator.bash $envelope_name $box_side $work_plane_height $grid_resolution
+./illuminance_grid_calculator.bash $envelope_name $box_side $work_plane_height $grid_resolution $ambient_bounces
+
+echo "  Calculating daylight autonomy..."
+
+./daylight_autonomy.bash $envelope_name 300 ./radiance_column ./$envelope_name/ab"$ambient_bounces"_grid"$grid_resolution"_illuminance.pts $box_side $grid_resolution $ambient_bounces
 
 echo "  Done."
 echo ""

@@ -14,20 +14,23 @@
 #           Inputs           #
 ##############################
 
-illuminance_treshold=$1 # In lux
+illuminance_treshold=$2 # In lux
 # Column of radiance values:
-radiance_values_column=$2
+radiance_values_column=$3
 # Table of illuminance coefficients:
-illuminance_coefficients_table=$3
+illuminance_coefficients_table=$4
+# Side of the grid surface
+grid_side=$5
 # Output file name
-output_file_name=$4
+grid_resolution=$6 # Without .pts or any extension! The extension is written automatically.
+# grid resolution
+ambient_bounces=$7
 
 ##############################
 #         Processing         #
 ##############################
 
-touch $output_file_name
-> $output_file_name
+> ./$1/ab"$ambient_bounces"_grid"$grid_resolution"_daylight_autonomy.pts
 
 number_of_radiance_values=$(wc -l < "$radiance_values_column")
 
@@ -50,15 +53,15 @@ do
 #	echo "Finally, counter at " $daylight_autonomy_counter " over " $number_of_radiance_values
 	daylight_autonomy_temp=$(echo "scale=4; ($daylight_autonomy_counter/$number_of_radiance_values)*100" |bc -l)
 #	echo "So DA = " $daylight_autonomy_temp
-	echo $col1 $col2 $daylight_autonomy_temp >> $output_file_name
+	echo $col1 $col2 $daylight_autonomy_temp >> ./$1/ab"$ambient_bounces"_grid"$grid_resolution"_daylight_autonomy.pts
 	let "daylight_autonomy_counter=0"
 done < $illuminance_coefficients_table
 
-awk '{ if ((NR % '8') == 0) printf("\n"); print; }' daylight_autonomy > daylight_autonomy_lap
+awk '{ if ((NR % '$grid_resolution') == 1 && NR != 1 ) printf("\n"); print; }' ./$1/ab"$ambient_bounces"_grid"$grid_resolution"_daylight_autonomy.pts > ./$1/temp_daylight_autonomy
 
 #with
 echo "set terminal pngcairo enhanced font \"arial,10\" fontscale 1.0 size 500, 350 
-set output 'illuminance_map.png'
+set output 'ab"$ambient_bounces"_grid"$grid_resolution"_daylight_autonomy_map.png'
 unset key
 set view map
 set xtics border in scale 0,0 mirror norotate  offset character 0, 0, 0 autojustify
@@ -66,11 +69,14 @@ set ytics border in scale 0,0 mirror norotate  offset character 0, 0, 0 autojust
 set ztics border in scale 0,0 nomirror norotate  offset character 0, 0, 0 autojustify
 set rtics axis in scale 0,0 nomirror norotate  offset character 0, 0, 0 autojustify
 unset title
-set xrange [ 0 : 100 ] noreverse nowriteback
-set yrange [ 0 : 100 ] noreverse nowriteback
+set size ratio -1
+set xrange [ 0 : $grid_side ] noreverse nowriteback
+set yrange [ 0 : $grid_side ] noreverse nowriteback
 set cbrange [ 0 : 100 ]
-set cblabel \"Daylight Autonomy 300 (%)\" 
+set cblabel \"Daylight Autonomy $illuminance_treshold (%)\" 
 set palette rgbformulae 33,13,10
-plot \"daylight_autonomy_lap\" using 2:1:3 with image" > temp_da_plotcommands.gp
+plot \".\/$1\/temp_daylight_autonomy\" using 2:1:3 with image" > ./$1/temp_da_plotcommands.gp
 
-gnuplot temp_da_plotcommands.gp
+gnuplot ./$1/temp_da_plotcommands.gp
+
+mv ./ab"$ambient_bounces"_grid"$grid_resolution"_daylight_autonomy_map.png ./$1

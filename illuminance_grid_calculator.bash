@@ -16,12 +16,13 @@
 # Input 2 : side of the grid surface
 # Input 3 : height of the grid surface
 # Input 4 : grid resolution
+# Input 5 : ambient bounces
 
 ##############################
 #           Script           #
 ##############################
 
-ambient_bounces=0
+ambient_bounces=$5
 
 echo "rvu -vtl -vp $(echo "$2/2" | bc -l) $(echo "$2/2" | bc -l) $2 -vd 0 0 -1 -vu 0 1 0 -vh $2 -vv $2" > $1/down_l.vf
 
